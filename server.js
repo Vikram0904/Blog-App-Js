@@ -2,4 +2,6 @@ const express  = require('express');
 
 const app = express();
 
-console.log(app);
+const PORT = process.env.PORT || 8080 ;
+
+app.listen(PORT, console.log(`Server Running On: ${PORT}`));
