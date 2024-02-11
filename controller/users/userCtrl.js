@@ -2,13 +2,27 @@
 const User =require("../../model/User/User");
 
 const userRegisterCtrl =async(req,res)=>{
+    const {username,email,password} =req.body;
     try{
-    res.json({
-    status :"success",
-    data : "user registered successfully",
-    });
+    const userFound = await User.findOne({email});    
+    if(userFound){
+        return res.json({
+            msg:"User Already Exists"
+        });
     }
-    catch(err){
+
+    const user = await User.create({
+        username,
+        email,
+        password,
+    }); 
+    
+    res.json(
+        {
+        status: "success",
+        data: user 
+        });
+    }catch(err){
     res.json(err.message);   
     }
 };

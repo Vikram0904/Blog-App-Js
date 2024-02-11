@@ -1,35 +1,24 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const connection = require('../../config/database.js');
-const Post = require('../Post/Post.js');
-const User = require('../User/User.js');
+const mongoose = require('mongoose');
 
-
-const sequelize = new Sequelize('blog_api', 'root', 'vikram@1073', {
-    host: 'localhost',
-    dialect: 'mysql'
-  });
-
-
-const Comment = sequelize.define('Comment', {
+const commentSchema = new mongoose. Schema ({
+  post: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref:"Post",
+  required: [true, "Post is required"],
+  },
+  user: {
+  type: Object,
+  required: [true, "User is required"],
+  },
   description: {
-    type: DataTypes.STRING,
-    allowNull: false
-  }
-}, {
-  tableName: 'comments',
-  timestamps: true 
-});
+  type: String,
+  retired: [true, 'Comment description is required'],
+  },
+},
+{
+  timestamps: true,
+}
+);
 
-
-Comment.belongsTo(Post);
-Comment.belongsTo(User); 
-
-Comment.sync()
-  .then(() => {
-    console.log('Comments table synced');
-  })
-  .catch(err => {
-    console.error('Error syncing comments table:', err);
-  });
-
+const Comment = mongoose.model('Comment',commentSchema);
 module.exports = Comment;

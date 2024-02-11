@@ -11,13 +11,18 @@
     "Node",
     "Js",
     "Express",
-    "Js"
+    "Js",
+    "Mongoose"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.2",
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
+    "mongod": "^2.0.0",
+    "mongodb": "6.3",
+    "mongoose": "^8.1.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.1",
     "nodemon": "^3.0.3",

@@ -1,25 +1,17 @@
 const express = require('express');
-require('./config/database.js'); 
+require('dotenv').config();
+
+require('./config/database'); 
+
+
 const userRouter = require("./routes/users/userRoutes.js");
 const postRouter = require("./routes/posts/postRoutes.js");
 const commentRouter = require("./routes/comments/commentRoutes.js");
 
 const app = express();
 
-const useAuth ={
-  isLogin:false,
-  isAdmin:false,
-};
 
-app.use((req,res,next)=>{
-  if(useAuth.isLogin){
-  next();
-  }else{
-    return res.json({
-      msg:"Invalid login"
-    });
-  }
-});
+app.use(express.json());
 
 app.use('/api/users',userRouter);
 
