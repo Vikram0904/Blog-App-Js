@@ -1,6 +1,6 @@
 const express = require('express');
 const connection = require('./config/database.js'); 
-const createUserTableQuery = require('./model/User/User.js');
+const model = require('./model');
 
 const app = express();
 

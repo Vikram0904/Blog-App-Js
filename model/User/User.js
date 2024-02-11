@@ -1,26 +1,42 @@
-const mysql = require('mysql');
-const connection = require('./config/database.js'); 
 
+const { Sequelize, DataTypes } = require('sequelize');
 
-connection.connect(err => {
-    if (err) throw err;
-    console.log('Connected to MySQL database');
-
-    const createUserTableQuery = `
-        CREATE TABLE IF NOT EXISTS users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )
-    `;
-
-    connection.query(createUserTableQuery, (err, result) => {
-        if (err) throw err;
-        console.log('Users table created');
-    });
+const sequelize = new Sequelize('blog_api', 'root', 'vikram@1073', {
+  host: 'localhost',
+  dialect: 'mysql'
 });
 
-module.exports = connection;
+const User = sequelize.define('User', {
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  activeStatus: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  }
+}, {
+  tableName: 'users', 
+  timestamps: true, 
+  underscored: true 
+});
+
+sequelize.sync()
+  .then(() => {
+    console.log('Users table synced');
+  })
+  .catch(err => {
+    console.error('Error syncing users table:', err);
+  });
+
+module.exports = User;
