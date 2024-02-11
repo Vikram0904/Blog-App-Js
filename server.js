@@ -1,20 +1,34 @@
 const express = require('express');
 require('./config/database.js'); 
-const useRouter = require("./routes/users/userRoutes.js");
+const userRouter = require("./routes/users/userRoutes.js");
 const postRouter = require("./routes/posts/postRoutes.js");
-const commandRouter = require("./routes/comments/commentRoutes.js");
-// const model = require('./model');
+const commentRouter = require("./routes/comments/commentRoutes.js");
 
 const app = express();
 
-app.use('/api/users',useRouter);
+const useAuth ={
+  isLogin:false,
+  isAdmin:false,
+};
+
+app.use((req,res,next)=>{
+  if(useAuth.isLogin){
+  next();
+  }else{
+    return res.json({
+      msg:"Invalid login"
+    });
+  }
+});
+
+app.use('/api/users',userRouter);
 
 app.use('/api/posts',postRouter);
 
-app.use('/api/posts',commandRouter);
+app.use('/api/comments',commentRouter);
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

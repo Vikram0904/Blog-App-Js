@@ -61,3 +61,5 @@ catch(err){
 res.json(error.message);   
 }
 });
+
+module.exports = postRouter;

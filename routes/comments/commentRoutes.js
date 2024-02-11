@@ -1,8 +1,8 @@
 const express = require('express');
 
-const commandRouter = express.Router();
+const commentRouter = express.Router();
 
-commandRouter.post('/', async(req,res)=>{
+commentRouter.post('/', async(req,res)=>{
     try{
     res.json({
         status :"success",
@@ -13,7 +13,8 @@ commandRouter.post('/', async(req,res)=>{
     res.json(error.message);   
     }
 });
-commandRouter.get('/:id', async(req,res)=>{
+
+commentRouter.get('/:id', async(req,res)=>{
     try{
     res.json({
     status :"success",
@@ -26,7 +27,7 @@ res.json(error.message);
 });
 
 
-commandRouter.delete('/:id', async(req,res)=>{
+commentRouter.delete('/:id', async(req,res)=>{
 try{
 res.json({
     status :"success",
@@ -38,7 +39,7 @@ res.json(error.message);
 }
 });
 
-commandRouter.put('/:id', async(req,res)=>{
+commentRouter.put('/:id', async(req,res)=>{
 try{
 res.json({
 status :"success",
@@ -50,4 +51,4 @@ res.json(error.message);
 }
 });
 
-module.exports = commandRouter;
+module.exports = commentRouter;
