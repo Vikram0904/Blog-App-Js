@@ -1,4 +1,6 @@
 
+const bcrypt = require('bcryptjs')
+
 const User =require("../../model/User/User");
 
 const userRegisterCtrl =async(req,res)=>{
@@ -11,10 +13,13 @@ const userRegisterCtrl =async(req,res)=>{
         });
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password,salt);
+
     const user = await User.create({
         username,
         email,
-        password,
+        password:hashedPassword,
     }); 
     
     res.json(
@@ -28,15 +33,33 @@ const userRegisterCtrl =async(req,res)=>{
 };
 
 const userLoginCtrl =async(req,res)=>{
+    const { email, password } = req.body;
     try{
+        const userFound = await User.findOne({email});    
+
+        if(!userFound){
+            return res.json({
+                msg:"Invalid login credentials"
+            });
+        }  
+    
+        const isPasswordMatched = bcrypt.compare(password, userFound.password);   
+    
+        if(!isPasswordMatched){
+        return res.json({
+            msg:"Invalid login credentials"
+            });
+        }  
+
     res.json({
         status :"success",
-        data : "user login successfully",
+        data : userFound,
     });
     }
     catch(err){
-    res.json(error.message);   
+    res.json(err.message);   
     }
+    
 };
 
 const usersCtrl = async(req,res)=>{
@@ -52,14 +75,17 @@ const usersCtrl = async(req,res)=>{
 }
 
 const userProfileCtrl = async(req,res)=>{
+    const {id} = req.params
+
     try{
+    const user = await User.findById(id)
     res.json({
         status :"success",
-        data : "Profile route",
+        data : user,
     });
     }
     catch(err){
-    res.json(error.message);   
+    res.json(err.message);   
     }
 };
 
