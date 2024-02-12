@@ -2,17 +2,16 @@ const bcrypt = require('bcryptjs')
 const User =require("../../model/User/User");
 const generateToken = require("../../utils/generateToken");
 const getTokenFromHeader = require("../../utils/getTokenFromHeader");
+const appError = require('../../utils/apperror');
 
 
 
-const userRegisterCtrl =async(req,res)=>{
+const userRegisterCtrl =async(req,res,next)=>{
     const {username,email,password} =req.body;
     try{
     const userFound = await User.findOne({email});    
     if(userFound){
-        return res.json({
-            msg:"User Already Exists"
-        });
+        return next(appError("User Already Exists",500))
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -27,10 +26,10 @@ const userRegisterCtrl =async(req,res)=>{
     res.json(
         {
         status: "success",
-        data: user 
+        data: user ,
         });
     }catch(err){
-    res.json(err.message);   
+    next(appError(err.message));   
     }
 };
 
@@ -82,12 +81,9 @@ const usersCtrl = async(req,res)=>{
 }
 
 const userProfileCtrl = async(req,res)=>{
-    const {id} = req.params
 
     try{
-    const token = getTokenFromHeader(req);
-    console.log(token);
-    const user = await User.findById(id)
+    const user = await User.findById(req.userAuth)
     res.json({
         status :"success",
         data : user,
